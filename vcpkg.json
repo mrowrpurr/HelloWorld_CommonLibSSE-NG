@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "skyspec-all",
+    "version-string": "0.0.1",
+    "description": "Top-level package for all SkySpec packages",
+    "homepage": "https://github.com/mrowrpurr/SkySpec",
+    "license": "MIT",
+    "supports": "windows & x64",
+    "dependencies": [
+        { "name": "vcpkg-cmake-config", "host": true },
+        "commonlibae"
+    ]
+}
