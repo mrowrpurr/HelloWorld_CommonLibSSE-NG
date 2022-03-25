@@ -11,6 +11,13 @@ using namespace RE;
 using namespace RE::BSScript;
 using namespace RE::BSScript::Internal;
 
+class DispatchMethodCallback : public RE::BSScript::IStackCallbackFunctor {
+public:
+    DispatchMethodCallback() = default;
+    void operator()(RE::BSScript::Variable a_result) override {}
+    void SetObject(const RE::BSTSmartPointer<RE::BSScript::Object>&) override {}
+};
+
 // Logic From FDGE to load all pex files.
 void ForceLoadAllScripts() {
     auto* vm = VirtualMachine::GetSingleton();
@@ -22,27 +29,52 @@ void ForceLoadAllScripts() {
     }
 }
 
+bool LOADED = false;
+
 void BindAllTheScripts() {
-    ConsoleLog::GetSingleton()->Print("Binding the BindMe script...");
-
-    auto* character = PlayerCharacter::GetSingleton();
     auto* vm = VirtualMachine::GetSingleton();
+    auto* character = PlayerCharacter::GetSingleton();
     auto* handlePolicy = vm->GetObjectHandlePolicy();
-    auto* bindPolicy = vm->GetObjectBindPolicy();
-
-    // Force load the BindMe script
-    vm->linker.Process(BSFixedString("BindMe"));
 
     // Get a handle for the character
-    auto handle = handlePolicy->GetHandleForObject(character->GetFormType(), character);
+    VMHandle handle = handlePolicy->GetHandleForObject(character->GetFormType(), character);
 
-    // Create an object for this script
-    BSTSmartPointer<Object> objectPtr;
-    vm->CreateObject("BindMe", objectPtr);
+    if (! LOADED) {
+        LOADED = true;
+        ConsoleLog::GetSingleton()->Print("Binding the BindMe script...");
 
-    // Bind it!
-    bindPolicy->BindObject(objectPtr, handle);
-}
+        // Force load the BindMe script
+        vm->linker.Process(BSFixedString("BindMe"));
+
+        // Create an object for this script
+        BSTSmartPointer<Object> objectPtr;
+        vm->CreateObject("BindMe", objectPtr);
+
+        // Bind it!
+        auto* bindPolicy = vm->GetObjectBindPolicy();
+        bindPolicy->BindObject(objectPtr, handle);
+    } else {
+        // Call a function on the new initialized object!
+        ConsoleLog::GetSingleton()->Print("Calling a function on BindMe...");
+
+        // Setup the arguments
+//        auto args = RE::FunctionArguments<std::string>("");
+        auto* args = RE::MakeFunctionArguments();
+
+        // Required: fallback
+        auto callback = new DispatchMethodCallback();
+        auto callbackPtr = RE::BSTSmartPointer<RE::BSScript::IStackCallbackFunctor>(callback);
+
+        vm->DispatchMethodCall(handle, "BindMe", "CallMe", args, callbackPtr);
+
+        // Find it!
+//        auto& scriptsAttachedToCharacter = vm->attachedScripts.find(handle)->second;
+//        for (auto& attachedScript : scriptsAttachedToCharacter) {
+//            if (attachedScript->GetTypeInfo()->GetName() == "BindMe") {
+//            }
+//        }
+    }
+};
 
 void BindScriptsPapyrusFunction(StaticFunctionTag*) {
     BindAllTheScripts();
