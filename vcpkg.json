@@ -1,9 +1,9 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
-    "name": "skyspec-all",
+    "name": "hello-skse",
     "version-string": "0.0.1",
-    "description": "Top-level package for all SkySpec packages",
-    "homepage": "https://github.com/mrowrpurr/SkySpec",
+    "description": "Hello, SKSE!",
+    "homepage": "https://github.com/mrowrpurr/HelloCommonLib",
     "license": "MIT",
     "supports": "windows & x64",
     "dependencies": [
