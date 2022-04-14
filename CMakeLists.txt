@@ -5,6 +5,9 @@ project(HelloSkse VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Required for compiling CommonLibSSE
+add_compile_options(/bigobj)
+
 # Define your SKSE plugin
 add_library(HelloSkse SHARED plugin.cpp)
 
