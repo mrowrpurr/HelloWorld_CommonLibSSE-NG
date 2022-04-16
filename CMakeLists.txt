@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(HelloSkse VERSION 0.0.1 LANGUAGES CXX)
+project(HelloWorld VERSION 0.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(/bigobj)
 
 # Define your SKSE plugin
-add_library(HelloSkse SHARED plugin.cpp)
+add_library(${PROJECT_NAME} SHARED plugin.cpp)
 
 # Link to CommonLibSSE
 find_package(CommonLibSSE CONFIG REQUIRED)
