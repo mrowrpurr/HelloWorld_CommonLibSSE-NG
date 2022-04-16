@@ -40,10 +40,7 @@
         },
         {
             "name": "Release",
-            "inherits": [
-                "vcpkg",
-                "build-tests"
-            ],
+            "inherits": ["vcpkg"],
             "displayName": "Release",
             "description": "Optimized release build.",
             "generator": "Ninja",
