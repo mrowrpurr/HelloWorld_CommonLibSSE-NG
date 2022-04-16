@@ -13,13 +13,19 @@ add_library(HelloSkse SHARED plugin.cpp)
 
 # Link to CommonLibSSE
 find_package(CommonLibSSE CONFIG REQUIRED)
-target_link_libraries(HelloSkse PRIVATE CommonLibSSE::CommonLibSSE)
+target_link_libraries(${PROJECT_NAME} PRIVATE CommonLibSSE::CommonLibSSE)
 
-# Setup a folder which the output .dll automatically gets copied to!
-set(DLL_FOLDER "C:/Users/mrowr/Dropbox/Skyrim/Mod Authoring/Mods/Mrowr Purr's SKSE Plugins - AE/SKSE/Plugins")
-add_custom_command(
-	TARGET "${PROJECT_NAME}"
-	POST_BUILD
-	COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:${PROJECT_NAME}>" "${DLL_FOLDER}"
-	VERBATIM
-)
+if(DEFINED ENV{SKYRIM_MODS})
+	# Setup a folder which the output .dll automatically gets copied to!
+	set(DLL_FOLDER "$ENV{SKYRIM_MODS}/${PROJECT_NAME}/SKSE/Plugins")
+
+	# SKSE plugin .dll is copied to the specified folder
+	add_custom_command(
+		TARGET "${PROJECT_NAME}"
+		POST_BUILD
+		COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:${PROJECT_NAME}>" "${DLL_FOLDER}/${PROJECT_NAME}.dll"
+		VERBATIM
+	)
+else()
+	message(WARNING "Please set SKYRIM_MODS environment variable to the path to your Skyrim mods folder")
+endif()
