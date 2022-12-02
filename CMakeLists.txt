@@ -10,7 +10,7 @@ option(DEPLOY_MOD "Copy mod .dll and resource into %SKYRIM_MODS_DEPLOY_ROOT%\\${
 # Pending https://github.com/microsoft/vcpkg/pull/28126
 # To update vcpkg to use 3.25.1
 # To fix https://gitlab.kitware.com/cmake/cmake/-/issues/24209
-set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 0)
 
 # Override <DEPLOY_ROOT> to set the path of a mod to deploy files to.
 # The SKSE plugin files will be writen to <DEPLOY_ROOT>/<PROJECT_NAME>/SKSE/Plugins
