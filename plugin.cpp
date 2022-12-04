@@ -1,3 +1,12 @@
+std::ofstream loggerOutputForStdoutRedirection;
+
+void RedirectStdoutToFile() {
+	auto stdout_path = SKSE::log::log_directory();
+	*stdout_path /= fmt::format("{}.STDOUT.log", SKSE::PluginDeclaration::GetSingleton()->GetName());
+	loggerOutputForStdoutRedirection = std::ofstream{stdout_path->string()};
+	std::cout.rdbuf(loggerOutputForStdoutRedirection.rdbuf());
+}
+
 void InitializeLog() {
 	auto path = SKSE::log::log_directory();
 	if (!path) SKSE::stl::report_and_fail("Failed to find standard logging directory"sv);
@@ -15,12 +24,19 @@ SKSEPluginLoad(const SKSE::LoadInterface* skse) {
 	InitializeLog();
 	SKSE::log::info("Hello, world!");
 
+	RedirectStdoutToFile();
+	std::cout << "Hello, STDOUT!" << std::endl;
+
 	SKSE::Init(skse);
 
 	// Once all plugins and mods are loaded, then the ~ console is ready and can be printed to
 	SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* message){
-		if (message->type == SKSE::MessagingInterface::kDataLoaded)
-			RE::ConsoleLog::GetSingleton()->Print("Hello, world!");
+		if (message->type == SKSE::MessagingInterface::kDataLoaded) {
+			RE::ConsoleLog::GetSingleton()->Print("Hello, world! kDataLoaded");
+			SKSE::log::info("kDataLoaded");
+			std::cout << "kDataLoaded" << std::endl;
+		}
+			
 	});
 
 	return true;
